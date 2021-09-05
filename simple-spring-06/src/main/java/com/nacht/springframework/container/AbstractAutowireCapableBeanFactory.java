@@ -134,7 +134,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, name);
         /*执行初始化方法*/
         invokeInitMethods(name, bean, beanDefinition);
-        wrappedBean = applyBeanPostProcessorsAfterInitialization(bean, name);
+        /*执行后置方法*/
+        wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, name);
         return wrappedBean;
     }
 

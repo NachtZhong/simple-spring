@@ -2,6 +2,7 @@ package processors;
 
 import com.nacht.springframework.BeansException;
 import com.nacht.springframework.context.extension.BeanPostProcessor;
+import service.UserService;
 
 /**
  * @author Nacht
@@ -13,6 +14,9 @@ public class MyBeanPostProcessor1 implements BeanPostProcessor {
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        if(bean instanceof UserService){
+            bean = new UserService("fuck");
+        }
         System.out.println(String.format("bean[%s], BeanPostProcessor[%s], 前置处理方法", beanName, processorName));
         return bean;
     }
