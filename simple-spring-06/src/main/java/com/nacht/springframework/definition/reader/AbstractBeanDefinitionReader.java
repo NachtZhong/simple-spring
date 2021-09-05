@@ -34,7 +34,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
      * @param registry
      * @param resourceLoader
      */
-    public AbstractBeanDefinitionReader(BeanDefinitionRegistry registry, DefaultResourceLoader resourceLoader) {
+    public AbstractBeanDefinitionReader(BeanDefinitionRegistry registry, ResourceLoader resourceLoader) {
         this.registry = registry;
         this.resourceLoader = resourceLoader == null ? new DefaultResourceLoader() : resourceLoader;
     }

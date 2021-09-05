@@ -1,11 +1,13 @@
 <beans xmlns="http://www.springframework.org/schema/beans">
 
     <bean id="userService" class="service.UserService">
-        <property name="name" value="123"/>
+        <property name="name" value="..."/>
         <property name="userDao" ref="userDao"/>
     </bean>
 
-    <bean id="userDao" class="service.UserDao">
-    </bean>
+    <bean id="userDao" class="service.UserDao" />
+    <bean class="processors.MyBeanFactoryPostProcessor"/>
+    <bean class="processors.MyBeanPostProcessor1"/>
+    <bean class="processors.MyBeanPostProcessor2"/>
 
 </beans>

@@ -42,6 +42,12 @@ public interface BeanDefinitionReader {
      */
     void loadBeanDefinitions(String location);
 
+    /**
+     * 加载多个路径文件中配置的bean definition
+     * @param locations
+     */
+    void loadBeanDefinitions(String... locations);
+
 
 
 }

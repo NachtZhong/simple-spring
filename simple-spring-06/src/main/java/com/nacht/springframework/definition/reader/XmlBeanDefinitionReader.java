@@ -6,6 +6,7 @@ import com.nacht.springframework.BeansException;
 import com.nacht.springframework.definition.*;
 import com.nacht.springframework.resource.Resource;
 import com.nacht.springframework.resource.loader.DefaultResourceLoader;
+import com.nacht.springframework.resource.loader.ResourceLoader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -41,7 +42,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader{
      * @param registry
      * @param resourceLoader
      */
-    public XmlBeanDefinitionReader(BeanDefinitionRegistry registry, DefaultResourceLoader resourceLoader) {
+    public XmlBeanDefinitionReader(BeanDefinitionRegistry registry, ResourceLoader resourceLoader) {
         super(registry, resourceLoader);
     }
 
@@ -82,6 +83,17 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader{
     }
 
     /**
+     * 从多个路径文件加载bean definition
+     * @param locations
+     */
+    @Override
+    public void loadBeanDefinitions(String... locations) {
+        for(String location : locations){
+            loadBeanDefinitions(location);
+        }
+    }
+
+    /**
      * 1. 从资源输入流中加载bean definition,
      * 2. 将bean definition注册到注册表中
      * 这里只做了一个简单的xml解析, 默认最外层就是beans, 里面是bean, 再里面是property, 不做太复杂, 明白流程即可
@@ -112,14 +124,16 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader{
             String id = childNode.getAttribute("id");
             String name = childNode.getAttribute("name");
             String className = childNode.getAttribute("class");
+            /*获取bean的class对象*/
+            Class<?> clazz = Class.forName(className);
             /*有id的情况下优先使用id作为bean的唯一标示, 这种情况name可以重复, 但是如果只有name的时候, name必须保证全局唯一*/
             String beanName = StrUtil.isNotEmpty(id) ? id : name;
+            /*如果没有配置id和name, 取class首字母小写作为beanName*/
+            beanName = StrUtil.isEmpty(beanName) ? StrUtil.lowerFirst(clazz.getSimpleName()) : beanName;
             /*如果beanName重复, 抛出异常*/
             if (getRegistry().containsBeanDefinition(beanName)){
                 throw new BeansException("duplicate beanName: " + beanName + ", please check your config.");
             }
-            /*获取bean的class对象*/
-            Class<?> clazz = Class.forName(className);
             /*获取bean的属性*/
             PropertyValues propertyValues = fetchPropertyValuesFromElement(childNode);
             BeanDefinition beanDefinition = new BeanDefinition(clazz, propertyValues);

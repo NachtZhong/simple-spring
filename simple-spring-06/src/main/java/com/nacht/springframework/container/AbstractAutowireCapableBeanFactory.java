@@ -1,6 +1,7 @@
 package com.nacht.springframework.container;
 
 import com.nacht.springframework.BeansException;
+import com.nacht.springframework.context.extension.BeanPostProcessor;
 import com.nacht.springframework.definition.BeanDefinition;
 import com.nacht.springframework.definition.BeanReference;
 import com.nacht.springframework.definition.PropertyValue;
@@ -11,13 +12,14 @@ import com.nacht.springframework.instantiation.InstantiationStrategy;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 容器抽象类
  * @author Nacht
  * Created on 2021/8/30
  */
-public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory {
+public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory{
 
     /**
      * 默认使用cglib策略来进行bean的创建
@@ -39,6 +41,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             bean = createBeanInstance(name, beanDefinition, args);
             /*属性填充*/
             applyPropertyValues(name, bean, beanDefinition);
+            /*执行BeanPostProcessor的前置和后置处理方法*/
+            bean = initializeBean(name, beanDefinition, bean);
             /*将实例对象添加到单例注册表中*/
             addSingleton(name, bean);
             return bean;
@@ -46,6 +50,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             throw new BeansException("create bean failed", e);
         }
     }
+
+
 
     /**
      * 封装一个方法来进行bean的创建具体逻辑
@@ -116,5 +122,74 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         this.instantiationStrategy = instantiationStrategy;
     }
 
+    /**
+     * 执行BeanPostProcessor的前置和后置方法
+     * @param name
+     * @param beanDefinition
+     * @param bean
+     * @return
+     */
+    private Object initializeBean(String name, BeanDefinition beanDefinition, Object bean){
+        /*执行前置方法*/
+        Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, name);
+        /*执行初始化方法*/
+        invokeInitMethods(name, bean, beanDefinition);
+        wrappedBean = applyBeanPostProcessorsAfterInitialization(bean, name);
+        return wrappedBean;
+    }
+
+    /**
+     * 执行初始化方法, 暂未实现
+     * @param name
+     * @param bean
+     * @param beanDefinition
+     */
+    private void invokeInitMethods(String name, Object bean, BeanDefinition beanDefinition){
+        //todo
+    }
+
+    /**
+     * 执行BeanPostProcessor前置方法
+     * @param bean
+     * @param beanName
+     * @return
+     * @throws BeansException
+     */
+    @Override
+    public Object applyBeanPostProcessorsBeforeInitialization(Object bean, String beanName) throws BeansException {
+        Object result = bean;
+        List<BeanPostProcessor> beanPostProcessors = getBeanPostProcessors();
+        for(int i = 0; i < beanPostProcessors.size(); i++){
+            BeanPostProcessor beanPostProcessor = beanPostProcessors.get(i);
+            result = beanPostProcessor.postProcessBeforeInitialization(result, beanName);
+            /*如果一个BeanPostProcessor将bean改为了null, 其他BeanPostProcessor就没机会再对其进行修改了*/
+            if(result == null){
+                return result;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 执行BeanPostProcessor后置方法
+     * @param bean
+     * @param beanName
+     * @return
+     * @throws BeansException
+     */
+    @Override
+    public Object applyBeanPostProcessorsAfterInitialization(Object bean, String beanName) throws BeansException {
+        Object result = bean;
+        List<BeanPostProcessor> beanPostProcessors = getBeanPostProcessors();
+        for(int i = 0; i < beanPostProcessors.size(); i++){
+            BeanPostProcessor beanPostProcessor = beanPostProcessors.get(i);
+            result = beanPostProcessor.postProcessAfterInitialization(result, beanName);
+            /*如果一个BeanPostProcessor将bean改为了null, 其他BeanPostProcessor就没机会再对其进行修改了*/
+            if(result == null){
+                return result;
+            }
+        }
+        return result;
+    }
 
 }

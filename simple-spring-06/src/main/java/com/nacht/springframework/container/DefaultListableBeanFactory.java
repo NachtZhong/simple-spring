@@ -80,4 +80,13 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
         definitionMap.put(beanName, beanDefinition);
     }
 
+    /**
+     * 预加载非lazy-init的单例bean
+     * @throws BeansException
+     */
+    @Override
+    public void preInstantiateSingletons() throws BeansException {
+        definitionMap.keySet().forEach(this :: getBean);
+    }
+
 }

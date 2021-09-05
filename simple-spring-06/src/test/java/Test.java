@@ -1,5 +1,7 @@
 import com.nacht.springframework.container.BeanFactory;
 import com.nacht.springframework.container.DefaultListableBeanFactory;
+import com.nacht.springframework.context.ApplicationContext;
+import com.nacht.springframework.context.ClassPathXmlApplicationContext;
 import com.nacht.springframework.definition.BeanDefinition;
 import com.nacht.springframework.definition.BeanReference;
 import com.nacht.springframework.definition.PropertyValue;
@@ -18,14 +20,7 @@ import java.util.Arrays;
  */
 public class Test {
     public static void main(String[] args) {
-        /*初始化BeanFactory*/
-        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
-        /*初始化bean definition加载器*/;
-        BeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
-        beanDefinitionReader.loadBeanDefinitions("classpath:applicationContext.xml");
-        /*获取bean, 测试*/
-        UserService userService = beanFactory.getBean("userService", UserService.class);
-        userService.getUserInfo();
-        userService.queryUserInfo();
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext();
+        applicationContext.getBean("userService", UserService.class).getUserInfo();
     }
 }
