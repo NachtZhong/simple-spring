@@ -1,0 +1,10 @@
+<beans xmlns="http://www.springframework.org/schema/beans">
+    <bean class="com.nacht.bean.SingletonBean" scope="singleton"/>
+    <bean class="com.nacht.bean.PrototypeBean" scope="prototype"/>
+<!--    <bean name="singletonObject" class="com.nacht.factory.SingletonObjectFactory">-->
+<!--        <property name="factoryName" value="singletonFactory"></property>-->
+<!--    </bean>-->
+<!--    <bean name="prototypeObject" class="com.nacht.factory.PrototypeObjectFactory">-->
+<!--        <property name="factoryName" value="prototypeFactory"></property>-->
+<!--    </bean>-->
+</beans>
