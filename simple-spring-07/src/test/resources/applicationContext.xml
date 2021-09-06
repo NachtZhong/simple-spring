@@ -1,0 +1,14 @@
+<beans xmlns="http://www.springframework.org/schema/beans">
+
+<!--    <bean id="userService" class="service.UserService" init-method="init" destroy-method="destroy">-->
+<!--        <property name="name" value="..."/>-->
+<!--        <property name="userDao" ref="userDao"/>-->
+<!--    </bean>-->
+
+<!--    <bean id="userDao" class="service.UserDao" />-->
+    <bean class="service.InitializingAndDisposableBean" />
+    <bean class="processors.MyBeanFactoryPostProcessor"/>
+    <bean class="processors.MyBeanPostProcessor1"/>
+    <bean class="processors.MyBeanPostProcessor2"/>
+
+</beans>

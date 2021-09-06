@@ -1,8 +1,6 @@
 package com.nacht.springframework.resource;
 
 import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,18 +9,10 @@ import java.io.InputStream;
  * @author Nacht
  * Created on 2021/9/2
  */
-public class ClassPathResourceTest extends TestCase {
-
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        System.out.println("hh");
-    }
-
-    @Test
+public class URLResourceTest extends TestCase {
     public void testInputStream() throws IOException {
-        String path = "123.txt";
-        InputStream is = new ClassPathResource(path).getInputStream();
+        String path = "/Users/nacht/Documents/IDEA/ForBMW/nacht-spring-05/src/main/java/com/nacht/springframework/resource/Resource.java";
+        InputStream is = new URLResource(path).getInputStream();
         StringBuilder sb = new StringBuilder();
         int c = is.read();
         while (c != -1){

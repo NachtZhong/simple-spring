@@ -1,0 +1,11 @@
+<beans xmlns="http://www.springframework.org/schema/beans">
+
+    <bean id="userService" class="service.UserService" >
+        <property name="name" value="李大锤"/>
+        <property name="userDao" ref="userDao"/>
+    </bean>
+
+    <bean id="userDao" class="service.UserDao" />
+<!--    <bean class="service.InitializingAndDisposableBean" />-->
+    <bean class="service.TestAwareBean" name="haha" />
+</beans>
